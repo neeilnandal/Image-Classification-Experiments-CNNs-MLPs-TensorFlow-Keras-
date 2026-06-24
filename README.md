@@ -1,144 +1,248 @@
-# Deep Learning Assignment 1 — MLPs, CNNs, and Clock-Time Prediction
+# Deep Learning Experiments: MLPs, CNNs, and Analog Clock-Time Prediction
 
-This repo contains two tasks built with TensorFlow/Keras:
+TensorFlow/Keras experiments that compare dense and convolutional neural-network baselines across two controlled tasks:
 
-1. **[Task 1 — Image Classification](task1_image_classification/)**: MLP and CNN models trained on Fashion-MNIST and CIFAR-10, exploring how architecture depth and hyperparameters affect accuracy.
-2. **[Task 2 — Clock Time Prediction](task2_clock_time_prediction/)**: A CNN that reads an analog clock face and predicts the time, comparing five different label encodings (multi-head regression, sine–cosine, bucketed classification) under a custom circular error metric.
+1. **Image classification:** MLP and CNN models trained on Fashion-MNIST and CIFAR-10.
+2. **Clock-time prediction:** a CNN that reads analog clock faces and predicts time using multiple target encodings under a circular error metric.
 
-The full written report is in [`report/Assignment-1_Report.pdf`](report/Assignment-1_Report.pdf).
+The objective is not to chase a leaderboard number. It is to examine how representation, model architecture, and label design affect generalisation.
 
-## Repo Structure
+---
 
-```
-deep-learning-mlp-cnn/
-├── task1_image_classification/   # MLP & CNN on Fashion-MNIST / CIFAR-10
-├── task2_clock_time_prediction/  # Clock-time CNN with multiple label encodings
-├── report/                       # Full PDF writeup
-├── requirements.txt
-└── README.md
-```
+## Project Snapshot
 
-## Setup
+| Area              | Details                                                                                                                                      |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Status**        | Complete academic deep-learning experiment suite                                                                                             |
+| **Focus**         | Architecture comparison, controlled evaluation, reproducibility, and error analysis                                                          |
+| **Framework**     | TensorFlow / Keras                                                                                                                           |
+| **Tasks**         | Fashion-MNIST classification, CIFAR-10 classification, analog clock-time prediction                                                          |
+| **Models**        | MLPs and CNNs                                                                                                                                |
+| **Validation**    | Held-out test accuracy for classification; circular time error in minutes for clock prediction                                               |
+| **Documentation** | Architecture notes in [`docs/architecture.md`](docs/architecture.md) and full report in [`deeplearning_report.pdf`](deeplearning_report.pdf) |
+| **Scope**         | Educational research project; no transfer learning, augmentation pipeline, or production serving layer                                       |
 
-```bash
-git clone <your-repo-url>
-cd deep-learning-mlp-cnn
-pip install -r requirements.txt
-```
+---
 
-Each task folder contains both a Jupyter notebook (as originally run in Colab) and an equivalent `.py` script under `src/`.
+## Why This Project Matters
 
-## Results Summary
+The central question is:
+
+> How does architecture choice affect performance when the visual structure of the problem changes?
+
+A dense network can be adequate for simpler greyscale images. Convolutional models should be more useful when local spatial structure, colour variation, and visual complexity increase. The clock task adds a second question: how should a circular target such as time-of-day be encoded so that errors near the 12 o’clock boundary are handled sensibly?
+
+---
+
+## Results at a Glance
 
 ### Task 1 — Image Classification
 
-| Model | Dataset | Test Accuracy |
-|---|---|---|
-| MLP | Fashion-MNIST | 88.47% |
-| CNN | Fashion-MNIST | 90.81% |
-| CNN | CIFAR-10 | 71.84% |
+| Model | Dataset       | Test Accuracy |
+| ----- | ------------- | ------------: |
+| MLP   | Fashion-MNIST |        88.47% |
+| CNN   | Fashion-MNIST |        90.81% |
+| CNN   | CIFAR-10      |        71.84% |
 
-### Task 2 — Clock Time Prediction (75×75 images, validation error in minutes)
+**Interpretation:** the CNN improves Fashion-MNIST performance over the MLP baseline and provides a meaningful baseline for the more visually complex CIFAR-10 dataset.
 
-| Label Encoding | Mean Error (min) | Median Error (min) |
-|---|---:|---:|
-| Multi-Head (Unscaled) | 160.99 | 154.00 |
-| **Multi-Head (Scaled)** | **13.43** | **9.00** |
-| Sine–Cosine | 176.99 | 175.00 |
-| Bucket 30 min | 178.50 | 179.00 |
-| Bucket 15 min | 173.26 | 172.00 |
+### Task 2 — Analog Clock-Time Prediction
 
-The best-performing encoding (multi-head, scaled minutes) was scaled up to 150×150 inputs but underperformed (mean 179.39 min, median 179.00 min), suggesting a configuration mismatch flagged for future debugging — details in the [Task 2 README](task2_clock_time_prediction/README.md#known-issue--150150-model).
+Evaluation uses a circular time-distance metric, reported in minutes.
 
-OODA Summary
-Observe
-Fashion-MNIST and CIFAR-10 have different visual complexity. A dense network may work on simple images but struggle with richer color images.
-Orient
-The right comparison is not only accuracy. It is the relationship between dataset structure, model architecture, and generalization.
-Decide
-Use MLPs as baselines, CNNs as structure-aware models, and a width sweep to test dense-network capacity.
-Act
-Refactor the notebook into a reproducible script that trains models, saves metrics, plots curves, and produces comparison-ready outputs.
-Founder-Style Diagnosis
-User
-Students, recruiters, ML reviewers, or hiring managers checking whether the project demonstrates practical ML understanding.
-Pain Point
-A raw notebook with scattered outputs does not clearly show what was learned.
-Better Product
-A clean experiment suite with repeatable runs, corrected labels, saved results, and a clear README.
-Smallest Useful Version
-One script that trains Fashion-MNIST and CIFAR-10 baselines and saves a result summary.
-Current Version
-The current version includes clean model builders, consistent preprocessing, a real CNN baseline, experiment tracking, plots, and CLI controls.
-Security and Reproducibility Notes
-This project is low-risk.
-Area	Status
-Secrets	None
-API keys	None
-User data	None
-External datasets	Downloaded through Keras dataset utilities
-Code execution risk	Standard local Python training script
-Privacy risk	Low
-Reproducibility	Random seeds added
-Recommended safeguards:
-·	Do not commit large generated model files unless needed
-·	Keep virtual environments out of Git
-·	Save only compact result files and plots
-·	Document TensorFlow version in `run\_metadata.json`
-Scientific Skills Demonstrated
-This project shows:
-·	Experimental comparison
-·	Baseline modeling
-·	Model architecture reasoning
-·	Hyperparameter sensitivity analysis
-·	Train/test evaluation
-·	Learning-curve interpretation
-·	Reproducibility controls
-·	Result logging
-The scientific value is not in reaching maximum accuracy. It is in asking a controlled question:
-> How does architecture choice affect image classification across datasets of different visual complexity?
-Limitations
-·	No data augmentation
-·	No transfer learning
-·	No confusion matrix yet
-·	No per-class precision or recall
-·	No statistical repeated runs
-·	No model checkpoint comparison
-·	CIFAR-10 results depend heavily on training duration and hardware
-SEO Keywords
-Relevant keywords:
-·	Fashion-MNIST classification
-·	CIFAR-10 classification
-·	TensorFlow Keras CNN
-·	MLP vs CNN comparison
-·	image classification experiment
-·	deep learning portfolio project
-·	neural network baseline
-·	convolutional neural network
-·	Keras image classification
-·	hyperparameter sweep
-Repository Topics
+| Target encoding                   |    Mean error | Median error |
+| --------------------------------- | ------------: | -----------: |
+| Multi-head regression, unscaled   |    160.99 min |   154.00 min |
+| **Multi-head regression, scaled** | **13.43 min** | **9.00 min** |
+| Sine-cosine encoding              |    176.99 min |   175.00 min |
+| 30-minute bucket classification   |    178.50 min |   179.00 min |
+| 15-minute bucket classification   |    173.26 min |   172.00 min |
+
+The scaled multi-head formulation performed best in this experiment. A later 150×150 input run underperformed, indicating a configuration or pipeline mismatch worth debugging rather than a valid claim that larger input resolution is worse.
+
+---
+
+## Repository Structure
+
 ```text
-tensorflow
-keras
-deep-learning
-cnn
-mlp
-image-classification
-fashion-mnist
-cifar10
-neural-networks
-computer-vision
-python
+Image-Classification-Experiments-CNNs-MLPs-TensorFlow-Keras-/
+├── README.md
+├── requirements.txt
+├── LICENSE
+├── .gitignore
+│
+├── image_classification_experiments.py   # Root-level experiment script
+├── A1_TASK_1.ipynb                       # Original Task 1 notebook
+├── IDL_A1-Task_2.ipynb                   # Original Task 2 notebook
+├── deeplearning_report.pdf               # Full written report
+│
+├── src/
+│   ├── a1_task_1.py                      # Task 1: Fashion-MNIST / CIFAR-10 experiments
+│   ├── idl_a1_task_2.py                  # Task 2: analog clock-time prediction
+│   ├── A1_TASK_1.ipynb
+│   ├── IDL_A1-Task_2.ipynb
+│   └── IDL/                              # Supporting Task 2 resources
+│
+└── docs/
+    └── architecture.md                   # Architecture and experiment notes
 ```
 
+---
+
+## Setup
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/neeilnandal/Image-Classification-Experiments-CNNs-MLPs-TensorFlow-Keras-.git
+cd Image-Classification-Experiments-CNNs-MLPs-TensorFlow-Keras-
+```
+
+### 2. Create and activate a virtual environment
+
+**macOS / Linux**
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+**Windows PowerShell**
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+
+**Windows Command Prompt**
+
+```bat
+python -m venv .venv
+.\.venv\Scripts\activate.bat
+```
+
+### 3. Install dependencies
+
+```bash
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+---
+
+## Run the Experiments
+
+### Task 1 — Image Classification
+
+Run the refactored Python script:
+
+```bash
+python src/a1_task_1.py
+```
+
+Or open the original notebook:
+
+```bash
+jupyter notebook A1_TASK_1.ipynb
+```
+
+### Task 2 — Clock-Time Prediction
+
+Run the Python implementation:
+
+```bash
+python src/idl_a1_task_2.py
+```
+
+Or open the original notebook:
+
+```bash
+jupyter notebook IDL_A1-Task_2.ipynb
+```
+
+> Dataset downloads are handled through the experiment code or the original notebook workflow. Training time depends on local hardware and TensorFlow configuration.
+
+---
+
+## Experimental Design
+
+### Task 1: MLP versus CNN
+
+The classification experiments compare:
+
+* an MLP baseline to establish a non-convolutional reference point;
+* CNN architectures that preserve local spatial structure;
+* Fashion-MNIST and CIFAR-10 to test performance under different levels of visual complexity.
+
+### Task 2: Representing Circular Time
+
+The clock-time task compares several label encodings:
+
+* unscaled multi-head regression;
+* scaled multi-head regression;
+* sine-cosine representation;
+* coarse 30-minute bucket classification;
+* finer 15-minute bucket classification.
+
+The evaluation metric treats time as circular: an estimate near midnight should not be treated as maximally wrong when the true time is just after midnight.
+
+---
+
+## Key Findings
+
+* CNNs outperformed the MLP baseline on Fashion-MNIST in this experiment.
+* CIFAR-10 remained substantially harder than Fashion-MNIST, as expected from its colour variation and higher visual complexity.
+* Label representation mattered more than expected for clock-time prediction.
+* The scaled multi-head approach was the only tested encoding that produced low circular time error in this setup.
+* A higher-resolution clock configuration did not transfer cleanly and should be treated as a debugging lead, not a completed improvement.
+
+---
+
+## Reproducibility Notes
+
+* Use the versions pinned in `requirements.txt`.
+* Results can vary slightly across TensorFlow versions, hardware, and random initialisation.
+* Keep generated model weights, temporary datasets, and virtual environments out of version control unless required for a specific reproducibility release.
+* The reported figures are experiment outputs from this repository, not universal benchmarks.
+
+---
+
+## Limitations
+
+* No data augmentation.
+* No pretrained or transfer-learning models.
+* No repeated-seed confidence intervals.
+* No confusion matrices or per-class precision/recall analysis.
+* CIFAR-10 performance is sensitive to architecture, epoch count, hardware, and training configuration.
+* The clock-time task requires further debugging for the higher-resolution configuration.
+
+---
+
+## Potential Extensions
+
+* Add repeated-seed runs with mean and standard deviation reporting.
+* Add confusion matrices and per-class performance analysis.
+* Compare regularisation and augmentation strategies.
+* Add transfer-learning baselines for CIFAR-10.
+* Investigate the 150×150 clock-time configuration using saved intermediate predictions and data-pipeline checks.
+* Add automated tests for preprocessing, label conversion, and circular-error calculation.
+
+---
+
+## Skills Demonstrated
+
+`Python` · `TensorFlow` · `Keras` · `CNNs` · `MLPs` · `Computer Vision` · `Experiment Design` · `Model Evaluation` · `Hyperparameter Analysis` · `Reproducible ML`
+
+---
 
 ## References
 
-- A. Géron, *Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow*, 2nd Edition, O'Reilly, 2019.
-- M. Abadi et al., "TensorFlow: Large-scale machine learning on heterogeneous systems," 2015.
-- F. Agostinelli et al., "What time is it? Deep learning approaches for circadian rhythms," *Bioinformatics*, vol. 32, no. 12, pp. i8–i17, 2016.
+* Géron, A. *Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow*. O’Reilly, 2019.
+* Abadi, M. et al. “TensorFlow: Large-Scale Machine Learning on Heterogeneous Systems.” 2015.
+* Agostinelli, F. et al. “What Time Is It? Deep Learning Approaches for Circadian Rhythms.” *Bioinformatics*, 2016.
 
+---
 
+## License
 
-
+Released under the [Apache-2.0 License](LICENSE).
